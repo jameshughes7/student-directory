@@ -54,7 +54,15 @@ def print_footer(names)
 end
 
 
+def none_enrolled(students)
+  if students.count >= 1
+    print_header
+    print_footer(students)
+    print(students)
+  else
+    puts "Oops...there appears to be no students enrolled yet."
+  end
+end
+
 students = input_students
-print_header
-student_selector(students)
-print_footer(students)
+none_enrolled(students)
