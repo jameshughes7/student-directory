@@ -1,46 +1,60 @@
 def input_students
-  puts "Please enter the names of the students and their cohort"
+  puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  # create an empty array
-  students = []
-  # get the first name
-  #name = gets.split_by(" ")[0],cohort = gets.strip
-  #cohort = gets.chomp
-  name = gets.chomp
-  # while the name is not empty, repeat this code
-  while !name.empty? do
+
+  students = []                                     # create an empty array
+  name = gets.strip                                 # get the first name
+  while !name.empty? do                             # while the name is not empty, repeat this code
+    puts "Which cohort have they been placed on?"
+    cohort = gets.strip.to_sym
+    if cohort.empty?
+      cohort = "Not yet placed in a"
+    end
+    puts "Height?"
+    height = gets.strip
+    puts "Eye colour?"
+    eyecolour = gets.strip
+
     # add the student hash to the array
-    students << {name: name, cohort: :november}
+    students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
     puts "Now we have #{students.count} students"
+    puts "Please enter the details of more students"
     # get another name from the user
-    name = gets.chomp
+    name = gets.strip
   end
   # return the array of students
   students
 end
 
 def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
+  center_me("The students of Villains Academy")
+  center_me("------------")
 end
+
 
 def student_selector(students)
-    students.each_with_index do |student, index|
-      puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].capitalize == "N" && student[:name].length < 12
-    end
+  students.each_with_index do |student, index|
+   puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].capitalize == "J" && student[:name].length < 12
+  end
 end
 
 
-def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+#centering method for strings
+def center_me(string)
+  puts string.center(50)
+end
+
+#footer to print singular or plural students
+def print_footer(names)
+  unless names.count == 1
+    puts "Overall, we have #{names.count} great students.".center(50)
+  else
+    puts "Overall, we have #{names.count} great student.".center(50)
+  end
 end
 
 
 students = input_students
-#nothing happens until we call the methods
 print_header
 student_selector(students)
-#print (students.map {print e if |e| e.start_with?('b')}}
 print_footer(students)
-
-#students.map.{|student| student[:cohort] == cohort}
