@@ -1,11 +1,11 @@
-  @students = [] # an empty array accessible to all methods
+  @students = []                                          # an empty array accessible to all methods
 
   def print_menu
     puts "1. Input the students"
     puts "2. Show the students"
     puts "3. Save the list to students.csv"
     puts "4. Load the list from students.csv"
-    puts "9. Exit" # 9 because we'll be adding more items
+    puts "9. Exit"                                        # 9 because we'll be adding more items
   end
 
 
@@ -13,7 +13,7 @@
     loop do
       print_menu
       process(STDIN.gets.chomp)
-    end
+    end                                             #
   end
 
 
@@ -28,7 +28,7 @@ def process(selection)
     when "4"
       load_students
     when "9"
-      exit # this will cause the program to terminate
+      exit                                                # this will cause the program to terminate
     else
       puts "I don't know what you mean, try again"
   end
@@ -36,6 +36,7 @@ end
 
 
 def input_students
+    option_selected
   puts "Please enter the names of the students (to finish, just hit return twice)"
 
   name = STDIN.gets.strip                                 # get the first name
@@ -58,13 +59,14 @@ def input_students
   end
 end
 
-
+#appending the user input to the students array
 def push_to_students(name, cohort, height, eyecolour)
   @students << {name: name, cohort:cohort, height: height, eyecolour: eyecolour}
 end
 
 
 def show_students
+  option_selected
   print_header
   student_selector
   print_footer
@@ -81,12 +83,6 @@ def student_selector
   @students.each_with_index do |student, index|
    puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].capitalize == "J" && student[:name].length < 12
   end
-end
-
-
-#centering method for strings
-def center_me(string)
-  puts string.center(50)
 end
 
 
@@ -109,6 +105,7 @@ def save_students
     csv_line = student_data.join(",")
     file.puts csv_line
   end
+  option_selected
   file.close
 end
 
@@ -119,6 +116,7 @@ def load_students(filename = "students.csv")
     name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
   end
+  option_selected
   file.close
 end
 
@@ -134,6 +132,17 @@ def try_load_students
     puts "Sorry, #{filename} doesn't exist."
     exit # quit the program
   end
+end
+
+
+#centering method for strings
+def center_me(string)
+  puts string.center(50)
+end
+
+#feedback message when user chooses option from the interactive menu
+def option_selected
+  puts "Your option has been selected successfully!"
 end
 
 
