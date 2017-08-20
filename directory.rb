@@ -1,4 +1,4 @@
-  @students = []                                          # an empty array accessible to all methods
+@students = []                                            # an empty array accessible to all methods
 
   def print_menu
     puts "1. Input the students"
@@ -13,7 +13,7 @@
     loop do
       print_menu
       process(STDIN.gets.chomp)
-    end                                             #
+    end                                                   #
   end
 
 
@@ -37,7 +37,7 @@ end
 
 def input_students
     option_selected
-  puts "Please enter the names of the students (to finish, just hit return twice)"
+  puts "Please enter the name of the student (to finish, just hit return twice)"
 
   name = STDIN.gets.strip                                 # get the first name
   while !name.empty? do                                   # while the name is not empty, repeat this code
@@ -61,7 +61,7 @@ end
 
 #appending the user input to the students array
 def push_to_students(name, cohort, height, eyecolour)
-  @students << {name: name, cohort:cohort, height: height, eyecolour: eyecolour}
+  @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
 end
 
 
@@ -81,7 +81,9 @@ end
 
 def student_selector
   @students.each_with_index do |student, index|
-   puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].capitalize == "J" && student[:name].length < 12
+    if student[:name][0].capitalize == "J" && student[:name].length < 12
+      puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    end
   end
 end
 
@@ -96,28 +98,31 @@ def print_footer
 end
 
 
+#using code block to avoid having to close file explictly
 def save_students
   # open the file for writing
-  file = File.open("students.csv", "w")
-  # iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open("students.csv", "w") do |file|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts(csv_line)
+    end
   end
   option_selected
-  file.close
 end
 
 
+#using code block to avoid having to close file explictly
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
-  end
+  File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+        if line
+          name, cohort = line.chomp.split(',')
+          @students << {name: name, cohort: cohort.to_sym}
+        end
+      end
+    end
   option_selected
-  file.close
 end
 
 
