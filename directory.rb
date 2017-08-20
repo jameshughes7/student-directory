@@ -9,10 +9,11 @@
   end
 
 
+
   def interactive_menu
     loop do
       print_menu
-      process(gets.chomp)
+      process(STDIN.gets.chomp)
     end
   end
 
@@ -28,39 +29,35 @@ def process(selection)
     when "4"
       load_students
     when "9"
-      exit
+      exit # this will cause the program to terminate
     else
       puts "I don't know what you mean, try again"
   end
 end
 
-def push_to_students(name, cohort, height, eyecolour)
-  @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
+def push_to_students (name, cohort, height, eyecolour)
+  @students << {name: name, cohort:cohort, height: height, eyecolour: eyecolour}
 end
 
-
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
+  puts "Please enter the names of the students (to finish, just hit return twice)"
 
-  name = gets.strip                                 # get the first name
+  name = STDIN.gets.strip                                 # get the first name
   while !name.empty? do                             # while the name is not empty, repeat this code
     puts "Which cohort have they been placed on?"
-    cohort = gets.strip.to_sym
+    cohort = STDIN.gets.strip.to_sym
     if cohort.empty?
       cohort = "Not yet placed in a"
     end
     puts "Height?"
-    height = gets.strip
+    height = STDIN.gets.strip
     puts "Eye colour?"
-    eyecolour = gets.strip
+    eyecolour = STDIN.gets.strip
 
-    # add the student hash to the array
-    @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
     puts "Now we have #{@students.count} students"
     puts "Please enter the details of more students"
     # get another name from the user
-    name = gets.strip
+    name = STDIN.gets.strip
   end
 end
 
@@ -99,17 +96,6 @@ def print_footer
   end
 end
 
-
-def none_enrolled(students)
-  if students.count >= 1
-    print_header
-    print_footer(students)
-    print(students)
-  else
-    puts "Oops...there appears to be no students enrolled yet."
-  end
-end
-
 def save_students
   # open the file for writing
   file = File.open("students.csv", "w")
@@ -122,15 +108,26 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students (filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
+    name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
+end
+
+try_load_students
 interactive_menu
-students = input_students
-none_enrolled(students)
