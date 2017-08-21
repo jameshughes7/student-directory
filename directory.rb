@@ -13,7 +13,7 @@
     loop do
       print_menu
       process(STDIN.gets.chomp)
-    end                                                   #
+    end
   end
 
 
@@ -59,6 +59,7 @@ def input_students
   end
 end
 
+
 #appending the user input to the students array
 def push_to_students(name, cohort, height, eyecolour)
   @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
@@ -101,40 +102,42 @@ end
 #using code block to avoid having to close file explictly
 def save_students
   # open the file for writing
-  File.open("students.csv", "w") do |file|
+  file = File.open("students.csv", "w")
     @students.each do |student|
       student_data = [student[:name], student[:cohort]]
       csv_line = student_data.join(",")
       file.puts(csv_line)
     end
-  end
   option_selected
 end
 
 
 #using code block to avoid having to close file explictly
 def load_students(filename = "students.csv")
-  File.open(filename, "r") do |file|
-    file.readlines.each do |line|
+  puts "Select a file you would like to use."            #Prompting user for file to be loaded
+  @filename = STDIN.gets.chomp                           #@file variable created to make it accessible to all methods
+  @filename = File.open(@filename, "r")
+    @filename.readlines.each do |line|
         if line
           name, cohort = line.chomp.split(',')
           @students << {name: name, cohort: cohort.to_sym}
         end
       end
-    end
   option_selected
 end
 
 
+#using code block to avoid having to close file explictly
+#@file variable created to make it accessible by all methods
 def try_load_students
-  filename = ARGV.first # first argument from the command line
-  if filename.nil? # get out of the method if it isn't given
+  @filename = ARGV.first # first argument from the command line
+  if @filename.nil? # get out of the method if it isn't given
     load_students
-  elsif File.exists?(filename) #if it exists
-    load_students(filename)
+  elsif File.exists?(@filename) #if it exists
+    load_students(@filename)
      puts "Loaded #{@students.count} from #{filename}"
   else # if it doesn't exist
-    puts "Sorry, #{filename} doesn't exist."
+    puts "Sorry, #{@filename} doesn't exist."
     exit # quit the program
   end
 end
@@ -144,6 +147,7 @@ end
 def center_me(string)
   puts string.center(50)
 end
+
 
 #feedback message when user chooses option from the interactive menu
 def option_selected
