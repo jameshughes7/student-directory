@@ -35,11 +35,17 @@ def process(selection)
 end
 
 
+#appending the user input to the students array
+def push_to_students(name, cohort, height, eyecolour)
+  @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
+end
+
+
 def input_students
     option_selected
   puts "Please enter the name of the student (to finish, just hit return twice)"
-
-  name = STDIN.gets.strip                                 # get the first name
+  name = STDIN.gets.strip
+                               # get the first name
   while !name.empty? do                                   # while the name is not empty, repeat this code
     puts "Which cohort have they been placed on?"
     cohort = STDIN.gets.strip.to_sym
@@ -60,12 +66,6 @@ def input_students
 end
 
 
-#appending the user input to the students array
-def push_to_students(name, cohort, height, eyecolour)
-  @students << {name: name, cohort: cohort, height: height, eyecolour: eyecolour}
-end
-
-
 def show_students
   option_selected
   print_header
@@ -74,18 +74,17 @@ def show_students
 end
 
 
-def print_header
-  center_me("The students of Villains Academy")
-  center_me("------------")
+def student_selector
+  @students.each_with_index do |student, i|
+  #  if student[:name][0].capitalize == "J" && student[:name].length < 12
+      puts ("#{i+1}. #{@students[i][:name]}, #{@students[i][:cohort]} cohort, #{@students[i][:height]}, #{@students[i][:eyecolour]}")
+  end
 end
 
 
-def student_selector
-  @students.each_with_index do |student, index|
-    if student[:name][0].capitalize == "J" && student[:name].length < 12
-      puts "#{index+1}. #{student[:name]} (#{student[:cohort]} cohort)"
-    end
-  end
+def print_header
+  center_me("The students of Villains Academy")
+  center_me("------------")
 end
 
 
@@ -104,7 +103,7 @@ def save_students
   # open the file for writing
   file = File.open("students.csv", "w")
     @students.each do |student|
-      student_data = [student[:name], student[:cohort]]
+      student_data = [student[:name], student[:cohort], student[:height], student[:eyecolour]]
       csv_line = student_data.join(",")
       file.puts(csv_line)
     end
@@ -119,8 +118,9 @@ def load_students(filename = "students.csv")
   @filename = File.open(@filename, "r")
     @filename.readlines.each do |line|
         if line
-          name, cohort = line.chomp.split(',')
-          @students << {name: name, cohort: cohort.to_sym}
+          name, cohort, height, eyecolour = line.chomp.split(',')
+          push_to_students(name, cohort, height, eyecolour)
+          #@students << {name: name, cohort: cohort.to_sym, height: height, eyecolour: eyecolour}
         end
       end
   option_selected
@@ -135,7 +135,7 @@ def try_load_students
     load_students
   elsif File.exists?(@filename) #if it exists
     load_students(@filename)
-     puts "Loaded #{@students.count} from #{filename}"
+     puts "Loaded #{@students.count} from #{@filename}"
   else # if it doesn't exist
     puts "Sorry, #{@filename} doesn't exist."
     exit # quit the program
