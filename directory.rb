@@ -1,3 +1,6 @@
+require 'csv'                                             # to access the CSV library
+
+
 @students = []                                            # an empty array accessible to all methods
 
   def print_menu
@@ -100,14 +103,15 @@ end
 
 #using code block to avoid having to close file explictly
 def save_students
-  # open the file for writing
-  file = File.open("students.csv", "w")
+#CSV writing notation
+CSV.open("students.csv", "w") do |student|
     @students.each do |student|
       student_data = [student[:name], student[:cohort], student[:height], student[:eyecolour]]
       csv_line = student_data.join(",")
       file.puts(csv_line)
     end
   option_selected
+end
 end
 
 
